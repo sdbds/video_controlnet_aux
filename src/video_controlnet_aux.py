@@ -117,7 +117,7 @@ def main(
             result_frames.append(openpose_frame)
             print("frame " + i + "/" + str(n_frame) + ": done;")
 
-        final_vid = create_video(result_frames, fps, "openpose")
+        final_vid = create_video(result_frames, fps, preprocesser_model)
 
         files = [final_vid]
 
