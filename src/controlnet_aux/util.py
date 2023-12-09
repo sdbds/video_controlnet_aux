@@ -14,7 +14,6 @@ USE_SYMLINKS = False
 try:
     USE_SYMLINKS = eval(os.environ['AUX_USE_SYMLINKS'])
 except:
-    warnings.warn("USE_SYMLINKS not set successfully. Using default value: False to download models.")
     pass
 
 # fix SSL: CERTIFICATE_VERIFY_FAILED issue with pytorch download https://github.com/pytorch/pytorch/issues/33288
@@ -257,3 +256,52 @@ def custom_hf_download(pretrained_model_or_path, filename, cache_dir=annotator_c
             except Exception as e :
                 print(e)
     return model_path
+
+from enum import Enum
+
+class CPUState(Enum):
+    GPU = 0
+    CPU = 1
+    MPS = 2
+
+cpu_state = CPUState.GPU
+xpu_available = False
+directml_enabled = False
+
+def is_intel_xpu():
+    global cpu_state
+    global xpu_available
+    if cpu_state == CPUState.GPU:
+        if xpu_available:
+            return True
+    return False
+
+try:
+    import intel_extension_for_pytorch as ipex
+    if torch.xpu.is_available():
+        xpu_available = True
+except:
+    pass
+
+try:
+    if torch.backends.mps.is_available():
+        cpu_state = CPUState.MPS
+        import torch.mps
+except:
+    pass
+
+def get_torch_device():
+    global directml_enabled
+    global cpu_state
+    if directml_enabled:
+        global directml_device
+        return directml_device
+    if cpu_state == CPUState.MPS:
+        return torch.device("mps")
+    if cpu_state == CPUState.CPU:
+        return torch.device("cpu")
+    else:
+        if is_intel_xpu():
+            return torch.device("xpu")
+        else:
+            return torch.device(torch.cuda.current_device())

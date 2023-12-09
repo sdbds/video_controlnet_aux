@@ -5,7 +5,7 @@ import torch
 from .isnet import ISNetDIS
 import numpy as np
 import cv2
-from comfy.model_management import get_torch_device
+from ..util import get_torch_device
 DEVICE = get_torch_device()
 
 class AnimeSegmentation:

@@ -1,8 +1,6 @@
 from .network import UNet
 from .util import seg2img
 import torch
-import os
-import cv2
 from controlnet_aux.util import HWC3, resize_image_with_pad, common_input_validate, annotator_ckpts_path, custom_hf_download
 from huggingface_hub import hf_hub_download
 from PIL import Image
