@@ -19,3 +19,5 @@ yapf
 omegaconf
 ftfy
 addict
+yacs
+trimesh[easy]

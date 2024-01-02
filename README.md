@@ -12,58 +12,16 @@ The code is copy-pasted from the respective folders in https://github.com/lllyas
 
 All credit & copyright goes to https://github.com/lllyasviel.
 
+# Marigold
+**NEW!** Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
+https://github.com/kijai/ComfyUI-Marigold
+
+![](./examples/example_marigold_flat.jpg)
+![](./examples/example_marigold.png)
+
 # Updates
-* `AIO Aux Preprocessor` intergrating all loadable aux preprocessors as dropdown options. Easy to copy, paste and get the preprocessor faster.
-* Added OpenPose-format JSON output from OpenPose Preprocessor and DWPose Preprocessor. Checks [here](#faces-and-poses).
-* Fixed wrong model path when downloading DWPose.
-* Make hint images less blurry.
-* Added `resolution` option, `PixelPerfectResolution` and `HintImageEnchance` nodes (TODO: Documentation).
-* Added `RAFT Optical Flow Embedder` for TemporalNet2 (TODO: Workflow example).
-* Fixed opencv's conflicts between this extension, [ReActor](https://github.com/Gourieff/comfyui-reactor-node) and Roop. Thanks `Gourieff` for [the solution](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/7#issuecomment-1734319075)!
-* RAFT is removed as the code behind it doesn't match what what the original code does
-* Changed `lineart`'s display name from `Normal Lineart` to `Realistic Lineart`. This change won't affect old workflows
-* Added support for `onnxruntime` to speed-up DWPose (see the Q&A)
-* Fixed TypeError: expected size to be one of int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int], but got size with types [<class 'numpy.int64'>, <class 'numpy.int64'>]: [Issue](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/2), [PR](https://github.com/Fannovel16/comfyui_controlnet_aux/pull/71))
-* Fixed ImageGenResolutionFromImage mishape (https://github.com/Fannovel16/comfyui_controlnet_aux/pull/74)
-* Fixed LeRes and MiDaS's incomatipility with MPS device
-* Fixed checking DWPose onnxruntime session multiple times: https://github.com/Fannovel16/comfyui_controlnet_aux/issues/89)
-* Added `Anime Face Segmentor` (in `ControlNet Preprocessors/Semantic Segmentation`) for [ControlNet AnimeFaceSegmentV2](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite#animefacesegmentv2). Checks [here](#anime-face-segmentor)
-* Change download functions and fix [download error](https://github.com/Fannovel16/comfyui_controlnet_aux/issues/39): [PR](https://github.com/Fannovel16/comfyui_controlnet_aux/pull/96)
-* Caching DWPose Onnxruntime during the first use of DWPose node instead of ComfyUI startup
-* Added alternative YOLOX models for faster speed when using DWPose
-* Added alternative DWPose models
-* Implemented the preprocessor for [AnimalPose ControlNet](https://github.com/abehonest/ControlNet_AnimalPose/tree/main). Check [Animal Pose AP-10K](#animal-pose-ap-10k) 
-* Added YOLO-NAS models which are drop-in replacements of YOLOX
-* Fixed Openpose Face/Hands no longer detecting: https://github.com/Fannovel16/comfyui_controlnet_aux/issues/54
-* Added TorchScript implementation of DWPose and AnimalPose
-* Added TorchScript implementation of DensePose from [Colab notebook](https://colab.research.google.com/drive/16hcaaKs210ivpxjoyGNuvEXZD4eqOOSQ) which doesn't require detectron2. [Example](#densepose). Thanks [@LayerNome](https://github.com/Layer-norm) for fixing bugs related.
-# Q&A:
-## Why some nodes doesn't appear after I installed this repo?
+Go to [Update page](./UPDATES.md) to follow updates
 
-This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
-
-## DWPose/AnimalPose only uses CPU so it's so slow. How can I make it use GPU?
-There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library and still way way faster than CPU. 
-
-A torchscript bbox detector is compatiable with an onnx pose estimator and vice versa.
-### TorchScript
-Set `bbox_detector` and `pose_estimator` according to this picture. You can try other bbox detector endings with `.torchscript.pt` to reduce bbox detection time if input images are ideal.
-![](./example_torchscript.png)
-### ONNXRuntime
-If onnxruntime is installed successfully and the checkpoint used endings with `.onnx`, it will replace default cv2 backend to take advantage of GPU. Note that if you are using NVidia card, this method currently can only works on CUDA 11.8 (ComfyUI_windows_portable_nvidia_cu118_or_cpu.7z) unless you compile onnxruntime yourself.
-
-1. Know your onnxruntime build:
-* * NVidia/AMD GPU: `onnxruntime-gpu`
-* * DirectML: `onnxruntime-directml`
-* * OpenVINO: `onnxruntime-openvino`
-
-Note that if this is your first time using ComfyUI, please test if it can run on your device before doing next steps.
-
-2. Add it into `requirements.txt`
-
-3. Run `install.bat` or pip command mentioned in Installation
-
-![](./example_onnx.png)
 # Installation:
 ## Using ComfyUI Manager (recommended):
 Install [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager) and do steps introduced there to install this repo.
@@ -89,30 +47,40 @@ All preprocessors except Inpaint are intergrated into `AIO Aux Preprocessor` nod
 This node allow you to quickly get the preprocessor but a preprocessor's own threshold parameters won't be able to set.
 You need to use its node directly to set thresholds.
 
+# Nodes (sections are categories in Comfy menu)
 ## Line Extractors
-* Binary Lines
-* Canny Edge
-* HED Lines
-* Realistic Lineart (formerly Normal Lineart)
-* Anime Lineart
-* Manga Lineart
-* M-LSD Lines
-* PiDiNet Lines
-* Scribble Lines
-* Scribble XDoG Lines
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| Binary Lines                | binary                    | control_scribble                          |
+| Canny Edge                  | canny                     | control_v11p_sd15_canny <br> control_canny <br> t2iadapter_canny |
+| HED Lines                   | hed                       | control_v11p_sd15_softedge <br> control_hed |
+| Standard Lineart            | standard_lineart          | control_v11p_sd15_lineart                 |
+| Realistic Lineart           | lineart (or `lineart_coarse` if `coarse` is enabled) | control_v11p_sd15_lineart |
+| Anime Lineart               | lineart_anime             | control_v11p_sd15s2_lineart_anime         |
+| Manga Lineart               | lineart_anime_denoise     | control_v11p_sd15s2_lineart_anime         |
+| M-LSD Lines                 | mlsd                      | control_v11p_sd15_mlsd <br> control_mlsd  |
+| PiDiNet Lines               | pidinet                   | control_v11p_sd15_softedge <br> control_scribble |
+| Scribble Lines              | scribble                  | control_v11p_sd15_scribble <br> control_scribble |
+| Scribble XDoG Lines         | scribble_xdog             | control_v11p_sd15_scribble <br> control_scribble |
+| Fake Scribble Lines         | scribble_hed              | control_v11p_sd15_scribble <br> control_scribble |
 
-## Normal and Depth Map
-* LeReS - Depth Map
-* MiDaS - Normal Map
-* MiDaS - Depth Map
-* BAE - Normal Map
-* Zoe - Depth Map
+## Normal and Depth Estimators
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| MiDaS Depth Map           | (normal) depth            | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
+| LeReS Depth Map           | depth_leres               | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
+| Zoe Depth Map             | depth_zoe                 | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
+| MiDaS Normal Map          | normal_map                | control_normal                            |
+| BAE Normal Map            | normal_bae                | control_v11p_sd15_normalbae               |
+| MeshGraphormer Hand Refiner ([HandRefinder](https://github.com/wenquanlu/HandRefiner))  |               | [control_sd15_inpaint_depth_hand_fp16](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/control_sd15_inpaint_depth_hand_fp16.safetensors) |
 
-## Faces and Poses
-* DWPose Pose Estimation
-* OpenPose Pose Estimation
-* MediaPipe Face Mesh
-* Animal Pose Estimation
+## Faces and Poses Estimators
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| DWPose Estimator                 | dw_openpose_full          | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
+| OpenPose Estimator               | openpose (detect_body) <br> openpose_hand (detect_body + detect_hand) <br> openpose_faceonly (detect_face) <br> openpose_full (detect_hand + detect_body + detect_face)    | control_v11p_sd15_openpose <br> control_openpose <br> t2iadapter_openpose |
+| MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
+| Animal Estimator                 | animal_openpose           | [control_sd15_animal_openpose_fp16](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
 An array of [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) corresponsding to each frame in an IMAGE batch can be gotten from DWPose and OpenPose using `app.nodeOutputs` on the UI or `/history` API endpoint. JSON output from AnimalPose uses a kinda similar format to OpenPose JSON:
 ```
@@ -176,18 +144,22 @@ for o in history['outputs']:
             print(json.loads(node_output['openpose_json'][0])) #An list containing Openpose JSON for each frame
 ```
 ## Semantic Segmentation
-* OneFormer ADE20K Segmentor
-* UniFormer Segmentor
-* OneFormer COCO Segmentor
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| OneFormer ADE20K Segmentor  | oneformer_ade20k          | control_v11p_sd15_seg                     |
+| OneFormer COCO Segmentor    | oneformer_coco            | control_v11p_sd15_seg                     |
+| UniFormer Segmentor         | segmentation              |control_sd15_seg <br> control_v11p_sd15_seg|
 
 ## T2IAdapter-only
-* Color Pallete
-* Content Shuffle
+| Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
+|-----------------------------|---------------------------|-------------------------------------------|
+| Color Pallete               | color                     | t2iadapter_color                          |
+| Content Shuffle             | shuffle                   | t2iadapter_style                          |
 
 # Examples
 > A picture is worth a thousand words
 
-Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same kind of results from preprocessor nodes of this repo.
+Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below. You can get the same kind of results from preprocessor nodes of this repo.
 ## Line Extractors
 ### Canny Edge
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
@@ -205,24 +177,25 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_zoedepth.png)
 ## BAE - Normal Map
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_normalbae.png)
-
+## MeshGraphormer
+![](./examples/example_mesh_graphormer.png)
 ## Faces and Poses
 ### OpenPose
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openpose.png)
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openposev2.png)
 
 ### Animal Pose (AP-10K)
-![](./example_animal_pose.png)
+![](./examples/example_animal_pose.png)
 
 ### DensePose
-![](./example_densepose.png)
+![](./examples/example_densepose.png)
 
 ## Semantic Segmantation
 ### OneFormer ADE20K Segmentor
 ![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_ade20k.png)
 
 ### Anime Face Segmentor
-![](./example_anime_face_segmentor.png)
+![](./examples/example_anime_face_segmentor.png)
 
 ## T2IAdapter-only
 ### Color Pallete for T2I-Adapter
@@ -231,3 +204,56 @@ Credit to https://huggingface.co/thibaud/controlnet-sd21. You can get the same k
 # Testing workflow
 https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json
 ![](https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/pose.png?raw=true)
+
+# Q&A:
+## Why some nodes doesn't appear after I installed this repo?
+
+This repo has a new mechanism which will skip any custom node can't be imported. If you meet this case, please create a issue on [Issues tab](https://github.com/Fannovel16/comfyui_controlnet_aux/issues) with the log from the command line.
+
+## DWPose/AnimalPose only uses CPU so it's so slow. How can I make it use GPU?
+There are two ways to speed-up DWPose: using TorchScript checkpoints (.torchscript.pt) checkpoints or ONNXRuntime (.onnx). TorchScript way is little bit slower than ONNXRuntime but doesn't require any additional library and still way way faster than CPU. 
+
+A torchscript bbox detector is compatiable with an onnx pose estimator and vice versa.
+### TorchScript
+Set `bbox_detector` and `pose_estimator` according to this picture. You can try other bbox detector endings with `.torchscript.pt` to reduce bbox detection time if input images are ideal.
+![](./examples/example_torchscript.png)
+### ONNXRuntime
+If onnxruntime is installed successfully and the checkpoint used endings with `.onnx`, it will replace default cv2 backend to take advantage of GPU. Note that if you are using NVidia card, this method currently can only works on CUDA 11.8 (ComfyUI_windows_portable_nvidia_cu118_or_cpu.7z) unless you compile onnxruntime yourself.
+
+1. Know your onnxruntime build:
+* * NVidia/AMD GPU: `onnxruntime-gpu`
+* * DirectML: `onnxruntime-directml`
+* * OpenVINO: `onnxruntime-openvino`
+
+Note that if this is your first time using ComfyUI, please test if it can run on your device before doing next steps.
+
+2. Add it into `requirements.txt`
+
+3. Run `install.bat` or pip command mentioned in Installation
+
+![](./examples/example_onnx.png)
+
+# Assets files of preprocessors
+* anime_face_segment:  [bdsqlsz/qinglong_controlnet-lllite/Annotators/UNet.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/Annotators/UNet.pth), [anime-seg/isnetis.ckpt](https://huggingface.co/skytnt/anime-seg/blob/main/isnetis.ckpt)
+* densepose:  [LayerNorm/DensePose-TorchScript-with-hint-image/densepose_r50_fpn_dl.torchscript](https://huggingface.co/LayerNorm/DensePose-TorchScript-with-hint-image/blob/main/densepose_r50_fpn_dl.torchscript)
+* dwpose:  
+* * bbox_detector: Either [yzd-v/DWPose/yolox_l.onnx](https://huggingface.co/yzd-v/DWPose/blob/main/yolox_l.onnx), [hr16/yolox-onnx/yolox_l.torchscript.pt](https://huggingface.co/hr16/yolox-onnx/blob/main/yolox_l.torchscript.pt), [hr16/yolo-nas-fp16/yolo_nas_l_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_l_fp16.onnx), [hr16/yolo-nas-fp16/yolo_nas_m_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_m_fp16.onnx), [hr16/yolo-nas-fp16/yolo_nas_s_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_s_fp16.onnx)
+* * pose_estimator: Either [hr16/DWPose-TorchScript-BatchSize5/dw-ll_ucoco_384_bs5.torchscript.pt](https://huggingface.co/hr16/DWPose-TorchScript-BatchSize5/blob/main/dw-ll_ucoco_384_bs5.torchscript.pt), [yzd-v/DWPose/dw-ll_ucoco_384.onnx](https://huggingface.co/yzd-v/DWPose/blob/main/dw-ll_ucoco_384.onnx)
+* animal_pose (ap10k):
+* * bbox_detector: Either [yzd-v/DWPose/yolox_l.onnx](https://huggingface.co/yzd-v/DWPose/blob/main/yolox_l.onnx), [hr16/yolox-onnx/yolox_l.torchscript.pt](https://huggingface.co/hr16/yolox-onnx/blob/main/yolox_l.torchscript.pt), [hr16/yolo-nas-fp16/yolo_nas_l_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_l_fp16.onnx), [hr16/yolo-nas-fp16/yolo_nas_m_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_m_fp16.onnx), [hr16/yolo-nas-fp16/yolo_nas_s_fp16.onnx](https://huggingface.co/hr16/yolo-nas-fp16/blob/main/yolo_nas_s_fp16.onnx)
+* * pose_estimator: Either [hr16/DWPose-TorchScript-BatchSize5/rtmpose-m_ap10k_256_bs5.torchscript.pt](https://huggingface.co/hr16/DWPose-TorchScript-BatchSize5/blob/main/rtmpose-m_ap10k_256_bs5.torchscript.pt), [hr16/UnJIT-DWPose/rtmpose-m_ap10k_256.onnx](https://huggingface.co/hr16/UnJIT-DWPose/blob/main/rtmpose-m_ap10k_256.onnx)
+* hed:  [lllyasviel/Annotators/ControlNetHED.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/ControlNetHED.pth)
+* leres:  [lllyasviel/Annotators/res101.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/res101.pth), [lllyasviel/Annotators/latest_net_G.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/latest_net_G.pth)
+* lineart:  [lllyasviel/Annotators/sk_model.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/sk_model.pth), [lllyasviel/Annotators/sk_model2.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/sk_model2.pth)
+* lineart_anime:  [lllyasviel/Annotators/netG.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/netG.pth)
+* manga_line:  [lllyasviel/Annotators/erika.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/erika.pth)
+* mesh_graphormer:  [hr16/ControlNet-HandRefiner-pruned/graphormer_hand_state_dict.bin](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/graphormer_hand_state_dict.bin), [hr16/ControlNet-HandRefiner-pruned/hrnetv2_w64_imagenet_pretrained.pth](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/hrnetv2_w64_imagenet_pretrained.pth)
+* midas:  [lllyasviel/Annotators/dpt_hybrid-midas-501f0c75.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/dpt_hybrid-midas-501f0c75.pt)
+* mlsd:  [lllyasviel/Annotators/mlsd_large_512_fp32.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/mlsd_large_512_fp32.pth)
+* normalbae:  [lllyasviel/Annotators/scannet.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/scannet.pt)
+* oneformer:  [lllyasviel/Annotators/250_16_swin_l_oneformer_ade20k_160k.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/250_16_swin_l_oneformer_ade20k_160k.pth)
+* open_pose:  [lllyasviel/Annotators/body_pose_model.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/body_pose_model.pth), [lllyasviel/Annotators/hand_pose_model.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/hand_pose_model.pth), [lllyasviel/Annotators/facenet.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/facenet.pth)
+* pidi:  [lllyasviel/Annotators/table5_pidinet.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/table5_pidinet.pth)
+* sam:  [dhkim2810/MobileSAM/sam_vit_h_4b8939.pth](https://huggingface.co/dhkim2810/MobileSAM/blob/main/sam_vit_h_4b8939.pth)
+* uniformer:  [lllyasviel/Annotators/upernet_global_small.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/upernet_global_small.pth)
+* zoe:  [lllyasviel/Annotators/ZoeD_M12_N.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/ZoeD_M12_N.pt)

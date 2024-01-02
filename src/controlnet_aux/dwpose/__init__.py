@@ -197,12 +197,10 @@ class DwposeDetector:
 
         input_image, output_type = common_input_validate(input_image, output_type, **kwargs)
         input_image, remove_pad = resize_image_with_pad(input_image, detect_resolution, upscale_method)
-
+        
         poses = self.detect_poses(input_image)
-        detected_map = remove_pad(input_image)
-        canvas = draw_poses(poses, detected_map.shape[0], detected_map.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
-
-        detected_map = HWC3(canvas)
+        canvas = draw_poses(poses, input_image.shape[0], input_image.shape[1], draw_body=include_body, draw_hand=include_hand, draw_face=include_face) 
+        detected_map = HWC3(remove_pad(canvas))
 
         if output_type == "pil":
             detected_map = Image.fromarray(detected_map)
@@ -224,11 +222,8 @@ class AnimalposeDetector:
         self.animal_pose_estimation = animal_pose_estimation
     
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename=None, pose_filename=None, cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
+    def from_pretrained(cls, pretrained_model_or_path, pretrained_det_model_or_path=None, det_filename="yolox_l.onnx", pose_filename="dw-ll_ucoco_384.onnx", cache_dir=annotator_ckpts_path, torchscript_device="cuda"):
         global global_cached_animalpose
-        pretrained_det_model_or_path = pretrained_det_model_or_path or pretrained_model_or_path
-        det_filename = det_filename or "yolox_l.onnx"
-        pose_filename = pose_filename or "dw-ll_ucoco_384.onnx"
         det_model_path = custom_hf_download(pretrained_det_model_or_path, det_filename, cache_dir=cache_dir)
         pose_model_path = custom_hf_download(pretrained_model_or_path, pose_filename, cache_dir=cache_dir)
         
