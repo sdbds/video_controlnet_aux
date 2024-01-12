@@ -1,19 +1,13 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
-
-This is a rework of [comfyui_controlnet_preprocessors](https://github.com/Fannovel16/comfy_controlnet_preprocessors) based on [ControlNet auxiliary models by 🤗](https://github.com/patrickvonplaten/controlnet_aux). I think the old repo isn't good enough to maintain.
-
-YOU NEED TO REMOVE `comfyui_controlnet_preprocessors` BEFORE USING THIS REPO. THESE TWO CONFLICT WITH EACH OTHER. 
-
-All old workflows still can be used with custom nodes in this repo but the version option won't do anything. Almost all v1 preprocessors are replaced by v1.1 except those doesn't apppear in v1.1.
-
-You don't need to care about the differences between v1 and v1.1 lol.
+![](./examples/example_mesh_graphormer.png)
+Plug-and-play [ComfyUI](https://github.com/comfyanonymous/ComfyUI) node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
 All credit & copyright goes to https://github.com/lllyasviel.
 
 # Marigold
-**NEW!** Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
+Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution still images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
 https://github.com/kijai/ComfyUI-Marigold
 
 ![](./examples/example_marigold_flat.jpg)
@@ -82,6 +76,12 @@ You need to use its node directly to set thresholds.
 | MediaPipe Face Mesh         | mediapipe_face            | controlnet_sd21_laion_face_v2             | 
 | Animal Estimator                 | animal_openpose           | [control_sd15_animal_openpose_fp16](https://huggingface.co/huchenlei/animal_openpose/blob/main/control_sd15_animal_openpose_fp16.pth) |
 
+### How to get OpenPose-format JSON?
+#### User-side
+This workflow will save images to ComfyUI's output folder (the same location as output images). If you haven't found `Save Pose Keypoints` node, update this extension
+![](./examples/example_save_kps.png)
+
+#### Dev-side
 An array of [OpenPose-format JSON](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#json-output-format) corresponsding to each frame in an IMAGE batch can be gotten from DWPose and OpenPose using `app.nodeOutputs` on the UI or `/history` API endpoint. JSON output from AnimalPose uses a kinda similar format to OpenPose JSON:
 ```
 [
@@ -254,6 +254,17 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 * oneformer:  [lllyasviel/Annotators/250_16_swin_l_oneformer_ade20k_160k.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/250_16_swin_l_oneformer_ade20k_160k.pth)
 * open_pose:  [lllyasviel/Annotators/body_pose_model.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/body_pose_model.pth), [lllyasviel/Annotators/hand_pose_model.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/hand_pose_model.pth), [lllyasviel/Annotators/facenet.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/facenet.pth)
 * pidi:  [lllyasviel/Annotators/table5_pidinet.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/table5_pidinet.pth)
-* sam:  [dhkim2810/MobileSAM/sam_vit_h_4b8939.pth](https://huggingface.co/dhkim2810/MobileSAM/blob/main/sam_vit_h_4b8939.pth)
+* sam:  [dhkim2810/MobileSAM/mobile_sam.pt](https://huggingface.co/dhkim2810/MobileSAM/blob/main/mobile_sam.pt)
 * uniformer:  [lllyasviel/Annotators/upernet_global_small.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/upernet_global_small.pth)
 * zoe:  [lllyasviel/Annotators/ZoeD_M12_N.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/ZoeD_M12_N.pt)
+
+# 500 Stars 😄
+<a href="https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date" />
+  </picture>
+</a>
+
+Thanks for yalls supports. I never thought the graph for stars would be linear lol.

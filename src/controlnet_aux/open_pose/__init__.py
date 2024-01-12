@@ -21,7 +21,7 @@ import torch
 from huggingface_hub import hf_hub_download
 from PIL import Image
 
-from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, annotator_ckpts_path, custom_hf_download, HF_MODEL_NAME
+from controlnet_aux.util import HWC3, common_input_validate, resize_image_with_pad, custom_hf_download, HF_MODEL_NAME
 from . import util
 from .body import Body, BodyResult, Keypoint
 from .face import Face
@@ -66,8 +66,8 @@ def draw_poses(poses: List[PoseResult], H, W, draw_body=True, draw_hand=True, dr
 
     return canvas
 
-def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_width: int) -> str:
-    """ Encode the pose as a JSON string following openpose JSON output format:
+def encode_poses_as_dict(poses: List[PoseResult], canvas_height: int, canvas_width: int) -> str:
+    """ Encode the pose as a dict following openpose JSON output format:
     https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md
     """
     def compress_keypoints(keypoints: Union[List[Keypoint], None]) -> Union[List[float], None]:
@@ -84,7 +84,7 @@ def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_wid
             )
         ]
 
-    return json.dumps({
+    return {
         'people': [
             {
                 'pose_keypoints_2d': compress_keypoints(pose.body.keypoints),
@@ -96,7 +96,7 @@ def encode_poses_as_json(poses: List[PoseResult], canvas_height: int, canvas_wid
         ],
         'canvas_height': canvas_height,
         'canvas_width': canvas_width,
-    }, indent=4)
+    }
     
 class OpenposeDetector:
     """
@@ -111,7 +111,7 @@ class OpenposeDetector:
         self.face_estimation = face_estimation
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="body_pose_model.pth", hand_filename="hand_pose_model.pth", face_filename="facenet.pth", cache_dir=annotator_ckpts_path):
+    def from_pretrained(cls, pretrained_model_or_path=HF_MODEL_NAME, filename="body_pose_model.pth", hand_filename="hand_pose_model.pth", face_filename="facenet.pth"):
         if pretrained_model_or_path == "lllyasviel/ControlNet":
             subfolder = "annotator/ckpts"
             face_pretrained_model_or_path = "lllyasviel/Annotators"
@@ -120,9 +120,9 @@ class OpenposeDetector:
             subfolder = ''
             face_pretrained_model_or_path = pretrained_model_or_path
 
-        body_model_path = custom_hf_download(pretrained_model_or_path, filename, cache_dir=cache_dir, subfolder=subfolder)
-        hand_model_path = custom_hf_download(pretrained_model_or_path, hand_filename, cache_dir=cache_dir, subfolder=subfolder)
-        face_model_path = custom_hf_download(face_pretrained_model_or_path, face_filename, cache_dir=cache_dir, subfolder=subfolder)
+        body_model_path = custom_hf_download(pretrained_model_or_path, filename, subfolder=subfolder)
+        hand_model_path = custom_hf_download(pretrained_model_or_path, hand_filename, subfolder=subfolder)
+        face_model_path = custom_hf_download(face_pretrained_model_or_path, face_filename, subfolder=subfolder)
 
         body_estimation = Body(body_model_path)
         hand_estimation = Hand(hand_model_path)
@@ -233,6 +233,6 @@ class OpenposeDetector:
             detected_map = Image.fromarray(detected_map)
         
         if image_and_json:
-            return (detected_map, encode_poses_as_json(poses, detected_map.shape[0], detected_map.shape[1]))
+            return (detected_map, encode_poses_as_dict(poses, detected_map.shape[0], detected_map.shape[1]))
         
         return detected_map

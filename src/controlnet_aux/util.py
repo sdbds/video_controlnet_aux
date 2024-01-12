@@ -19,6 +19,12 @@ annotator_ckpts_path = os.path.join(Path(__file__).parents[2], 'ckpts')
 USE_SYMLINKS = False
 
 try:
+    annotator_ckpts_path = os.environ['AUX_ANNOTATOR_CKPTS_PATH']
+except:
+    warnings.warn("Custom pressesor model path not set successfully.")
+    pass
+
+try:
     USE_SYMLINKS = eval(os.environ['AUX_USE_SYMLINKS'])
 except:
     pass
@@ -53,8 +59,11 @@ def HWC3(x):
         return y
 
 
-def make_noise_disk(H, W, C, F):
-    noise = np.random.uniform(low=0, high=1, size=((H // F) + 2, (W // F) + 2, C))
+def make_noise_disk(H, W, C, F, rng=None):
+    if rng:
+        noise = rng.uniform(low=0, high=1, size=((H // F) + 2, (W // F) + 2, C))
+    else:
+        noise = np.random.uniform(low=0, high=1, size=((H // F) + 2, (W // F) + 2, C))
     noise = cv2.resize(noise, (W + 2 * F, H + 2 * F), interpolation=cv2.INTER_CUBIC)
     noise = noise[F: F + H, F: F + W]
     noise -= np.min(noise)
