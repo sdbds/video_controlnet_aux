@@ -1,3 +1,2 @@
 moviepy
-mediapipe
 openmim
