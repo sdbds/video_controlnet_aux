@@ -5,8 +5,6 @@
 # 4th Edited by ControlNet (added face and correct hands)
 # 5th Edited by ControlNet (Improved JSON serialization/deserialization, and lots of bug fixs)
 # This preprocessor is licensed by CMU for non-commercial use only.
-import torch.utils.benchmark as benchmark
-benchmark.timer()
 
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
@@ -206,7 +204,7 @@ class DwposeDetector:
             detected_map = Image.fromarray(detected_map)
         
         if image_and_json:
-            return (detected_map, encode_poses_as_dict(poses, detected_map.shape[0], detected_map.shape[1]))
+            return (detected_map, encode_poses_as_dict(poses, input_image.shape[0], input_image.shape[1]))
         
         return detected_map
 
