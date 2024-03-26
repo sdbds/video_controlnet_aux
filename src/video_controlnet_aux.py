@@ -18,7 +18,7 @@ DENSEPOSE_MODEL_NAME = "LayerNorm/DensePose-TorchScript-with-hint-image"
 
 
 def main(
-    input_path="./inputs/cai-xukun.mp4",
+    input_path="./assets/cai-xukun.mp4",
     output_path="./outputs/",
 ):
     def initDetector(preprocesser_model):

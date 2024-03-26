@@ -1,2 +1,4 @@
 moviepy
 openmim
+gradio==3.41.2
+gradio_client==0.5.0
