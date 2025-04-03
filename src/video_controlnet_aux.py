@@ -1,13 +1,13 @@
 import gradio as gr
 
-from controlnet_aux.processor import Processor
+from custom_controlnet_aux.processor import Processor
 
 # Add any necessary module names that should not be imported with wildcard import above.
 
 import os
 import cv2
 from PIL import Image
-from moviepy.editor import VideoFileClip, ImageSequenceClip
+from moviepy import VideoFileClip, ImageSequenceClip
 import argparse
 import re
 
@@ -36,16 +36,23 @@ def main(
 
         # check fps
         video_path = os.path.join(output_path, "video_resized.mp4")
+        # Check if the video needs resizing
+        if clip.h > 720:
+            print("Video height is greater than 720, resizing to 720")
+            clip_resized = clip.resized(height=720)
+        else:
+            print("Video height is OK, keeping original size")
+            clip_resized = clip
+
+        # Handle fps
         if clip.fps > 30:
-            print("vide rate is over 30, resetting to 30")
-            clip_resized = clip.resize(height=512)
+            print("Video rate is over 30, resetting to 30")
             clip_resized.write_videofile(video_path, fps=30)
         else:
-            print("video rate is OK")
-            clip_resized = clip.resize(height=512)
+            print("Video rate is OK")
             clip_resized.write_videofile(video_path, fps=clip.fps)
 
-        print("video resized to 512 height")
+        print("video resized to 720 height")
 
         # Opens the Video file with CV2
         cap = cv2.VideoCapture(video_path)
@@ -168,6 +175,7 @@ def main(
         elif table_colomn_1 == "Line":
             options = [
                 "canny",
+                "pyracanny",
                 "lineart_anime",
                 "lineart_coarse",
                 "lineart_realistic",
@@ -218,6 +226,7 @@ def main(
                 "tile",
                 "binary",
                 "canny",
+                "pyracanny",
                 "lineart_anime",
                 "lineart_coarse",
                 "lineart_realistic",
@@ -260,7 +269,14 @@ def main(
     </div>
 """
 
-    with gr.Blocks() as demo:
+    with gr.Blocks(
+        theme=gr.themes.Glass(
+            primary_hue="green",
+            secondary_hue="violet",
+            neutral_hue="slate",
+        ),
+        title="Video_controlnet_aux",
+    ) as demo:
         with gr.Column():
             gr.HTML(title)
             with gr.Row():
@@ -323,6 +339,7 @@ def main(
                             "tile",
                             "binary",
                             "canny",
+                            "pyracanny",
                             "lineart_anime",
                             "lineart_coarse",
                             "lineart_realistic",
@@ -355,13 +372,13 @@ def main(
             outputs=[video_output, file_output],
         )
 
-    demo.launch()
+    demo.launch(inbrowser=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-i", "--input_path", type=str, default="./inputs/cai-xukun.mp4"
+        "-i", "--input_path", type=str, default="./examples/qinglong.mp4"
     )
     parser.add_argument("-o", "--output_path", type=str, default="./outputs/")
     args = parser.parse_args()

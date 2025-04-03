@@ -24,3 +24,4 @@ from .shuffle import ColorShuffleDetector,ContentShuffleDetector,DownSampleDetec
 from .tile import TileDetector
 from .uniformer import UniformerSegmentor
 from .zoe import ZoeDetector
+from .pyracanny import PyraCannyDetector

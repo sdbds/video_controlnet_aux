@@ -1,4 +1,3 @@
---extra-index-url https://download.pytorch.org/whl/cu118
 torch
 importlib_metadata
 huggingface_hub
@@ -24,3 +23,6 @@ trimesh[easy]
 albumentations
 scikit-learn
 matplotlib
+
+regex
+setuptools

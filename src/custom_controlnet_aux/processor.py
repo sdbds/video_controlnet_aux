@@ -38,6 +38,7 @@ from .__init__ import (
     TileDetector,
     UniformerSegmentor,
     ZoeDetector,
+    PyraCannyDetector,
 )
 
 from .util import get_torch_device
@@ -122,6 +123,7 @@ MODELS = {
     "tile": {"class": TileDetector, "checkpoint": False},
     "binary": {"class": BinaryDetector, "checkpoint": False},
     "color": {"class": ColorDetector, "checkpoint": False},
+    "pyracanny": {"class": PyraCannyDetector, "checkpoint": False},
 }
 
 
@@ -189,6 +191,7 @@ MODEL_PARAMS = {
     "lineart_coarse": {"coarse": True},
     "lineart_anime": {},
     "canny": {},
+    "pyracanny": {},
     "shuffle": {},
     "depth_zoe": {},
     "depth_leres": {"boost": False},
