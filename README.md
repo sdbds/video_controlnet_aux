@@ -1,17 +1,13 @@
 # ComfyUI's ControlNet Auxiliary Preprocessors
-![](./examples/example_mesh_graphormer.png)
 Plug-and-play [ComfyUI](https://github.com/comfyanonymous/ComfyUI) node sets for making [ControlNet](https://github.com/lllyasviel/ControlNet/) hint images
+
+"anime style, a protest in the street, cyberpunk city, a woman with pink hair and golden eyes (looking at the viewer) is holding a sign with the text "ComfyUI ControlNet Aux" in bold, neon pink" on Flux.1 Dev
+
+![](./examples/CNAuxBanner.jpg)
 
 The code is copy-pasted from the respective folders in https://github.com/lllyasviel/ControlNet/tree/main/annotator and connected to [the 🤗 Hub](https://huggingface.co/lllyasviel/Annotators).
 
 All credit & copyright goes to https://github.com/lllyasviel.
-
-# Marigold
-Check out Marigold Depth Estimator which can generate very detailed and sharp depth map from high-resolution still images. The mesh created by it is even 3D-printable. Due to diffusers, it can't be implemented in this extension but there is an Comfy implementation by Kijai
-https://github.com/kijai/ComfyUI-Marigold
-
-![](./examples/example_marigold_flat.jpg)
-![](./examples/example_marigold.png)
 
 # Updates
 Go to [Update page](./UPDATES.md) to follow updates
@@ -58,6 +54,8 @@ You need to use its node directly to set thresholds.
 | Scribble XDoG Lines         | scribble_xdog             | control_v11p_sd15_scribble <br> control_scribble |
 | Fake Scribble Lines         | scribble_hed              | control_v11p_sd15_scribble <br> control_scribble |
 | TEED Soft-Edge Lines        | teed                      | [controlnet-sd-xl-1.0-softedge-dexined](https://huggingface.co/SargeZT/controlnet-sd-xl-1.0-softedge-dexined/blob/main/controlnet-sd-xl-1.0-softedge-dexined.safetensors) <br> control_v11p_sd15_softedge (Theoretically)
+| Scribble PiDiNet Lines      | scribble_pidinet          | control_v11p_sd15_scribble <br> control_scribble |
+| AnyLine Lineart             |                           | mistoLine_fp16.safetensors <br> mistoLine_rank256 <br> control_v11p_sd15s2_lineart_anime <br> control_v11p_sd15_lineart |
 
 ## Normal and Depth Estimators
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
@@ -68,9 +66,12 @@ You need to use its node directly to set thresholds.
 | MiDaS Normal Map          | normal_map                | control_normal                            |
 | BAE Normal Map            | normal_bae                | control_v11p_sd15_normalbae               |
 | MeshGraphormer Hand Refiner ([HandRefinder](https://github.com/wenquanlu/HandRefiner))  | depth_hand_refiner | [control_sd15_inpaint_depth_hand_fp16](https://huggingface.co/hr16/ControlNet-HandRefiner-pruned/blob/main/control_sd15_inpaint_depth_hand_fp16.safetensors) |
-| Depth Anything            |                           | [Depth-Anything](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints_controlnet/diffusion_pytorch_model.safetensors) |
+| Depth Anything            |  depth_anything           | [Depth-Anything](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints_controlnet/diffusion_pytorch_model.safetensors) |
 | Zoe Depth Anything <br> (Basically Zoe but the encoder is replaced with DepthAnything)       | depth_anything | [Depth-Anything](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints_controlnet/diffusion_pytorch_model.safetensors) |
 | Normal DSINE              |                           | control_normal/control_v11p_sd15_normalbae |
+| Metric3D Depth            |                           | control_v11f1p_sd15_depth <br> control_depth <br> t2iadapter_depth |
+| Metric3D Normal           |                           | control_v11p_sd15_normalbae |
+| Depth Anything V2         |                           | [Depth-Anything](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints_controlnet/diffusion_pytorch_model.safetensors) |
 
 ## Faces and Poses Estimators
 | Preprocessor Node           | sd-webui-controlnet/other |          ControlNet/T2I-Adapter           |
@@ -174,65 +175,12 @@ for o in history['outputs']:
 # Examples
 > A picture is worth a thousand words
 
-Credit to https://huggingface.co/thibaud/controlnet-sd21 for most examples below. You can get the same kind of results from preprocessor nodes of this repo.
-## Line Extractors
-### Canny Edge
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_canny.png)
-### HED Lines
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_hed.png)
-### Realistic Lineart
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_lineart.png)
-### Scribble/Fake Scribble
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_scribble.png)
-### TEED Soft-Edge Lines
-![](./examples/example_teed.png)
-
-## Normal and Depth Map
-### Depth (idk the preprocessor they use)
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_depth.png)
-## Zoe - Depth Map
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_zoedepth.png)
-## BAE - Normal Map
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_normalbae.png)
-## MeshGraphormer
-![](./examples/example_mesh_graphormer.png)
-## Depth Anything & Zoe Depth Anything
-![](./examples/example_depth_anything.png)
-## DSINE
-![](./examples/example_dsine.png)
-
-## Faces and Poses
-### OpenPose
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openpose.png)
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_openposev2.png)
-
-### Animal Pose (AP-10K)
-![](./examples/example_animal_pose.png)
-
-### DensePose
-![](./examples/example_densepose.png)
-
-## Semantic Segmantation
-### OneFormer ADE20K Segmentor
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_ade20k.png)
-
-### Anime Face Segmentor
-![](./examples/example_anime_face_segmentor.png)
-
-## T2IAdapter-only
-### Color Pallete for T2I-Adapter
-![](https://huggingface.co/thibaud/controlnet-sd21/resolve/main/example_color.png)
-
-## Optical Flow
-### Unimatch
-![](./examples/example_unimatch.png)
-
-## Recolor
-![](./examples/example_recolor.png)
+![](./examples/ExecuteAll1.jpg)
+![](./examples/ExecuteAll2.jpg)
 
 # Testing workflow
-https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/test_cn_aux_full.json
-![](https://github.com/Fannovel16/comfyui_controlnet_aux/blob/master/tests/pose.png?raw=true)
+https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/examples/ExecuteAll.png
+Input image: https://github.com/Fannovel16/comfyui_controlnet_aux/blob/main/examples/comfyui-controlnet-aux-logo.png
 
 # Q&A:
 ## Why some nodes doesn't appear after I installed this repo?
@@ -287,12 +235,12 @@ Note that if this is your first time using ComfyUI, please test if it can run on
 * sam:  [dhkim2810/MobileSAM/mobile_sam.pt](https://huggingface.co/dhkim2810/MobileSAM/blob/main/mobile_sam.pt)
 * uniformer:  [lllyasviel/Annotators/upernet_global_small.pth](https://huggingface.co/lllyasviel/Annotators/blob/main/upernet_global_small.pth)
 * zoe:  [lllyasviel/Annotators/ZoeD_M12_N.pt](https://huggingface.co/lllyasviel/Annotators/blob/main/ZoeD_M12_N.pt)
-* teed:  [bdsqlsz/qinglong_controlnet-lllite/7_model.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/7_model.pth)
+* teed:  [bdsqlsz/qinglong_controlnet-lllite/7_model.pth](https://huggingface.co/bdsqlsz/qinglong_controlnet-lllite/blob/main/Annotators/7_model.pth)
 * depth_anything: Either [LiheYoung/Depth-Anything/checkpoints/depth_anything_vitl14.pth](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints/depth_anything_vitl14.pth), [LiheYoung/Depth-Anything/checkpoints/depth_anything_vitb14.pth](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints/depth_anything_vitb14.pth) or [LiheYoung/Depth-Anything/checkpoints/depth_anything_vits14.pth](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints/depth_anything_vits14.pth)
 * diffusion_edge: Either [hr16/Diffusion-Edge/diffusion_edge_indoor.pt](https://huggingface.co/hr16/Diffusion-Edge/blob/main/diffusion_edge_indoor.pt), [hr16/Diffusion-Edge/diffusion_edge_urban.pt](https://huggingface.co/hr16/Diffusion-Edge/blob/main/diffusion_edge_urban.pt) or [hr16/Diffusion-Edge/diffusion_edge_natrual.pt](https://huggingface.co/hr16/Diffusion-Edge/blob/main/diffusion_edge_natrual.pt)
 * unimatch: Either [hr16/Unimatch/gmflow-scale2-regrefine6-mixdata.pth](https://huggingface.co/hr16/Unimatch/blob/main/gmflow-scale2-regrefine6-mixdata.pth), [hr16/Unimatch/gmflow-scale2-mixdata.pth](https://huggingface.co/hr16/Unimatch/blob/main/gmflow-scale2-mixdata.pth) or [hr16/Unimatch/gmflow-scale1-mixdata.pth](https://huggingface.co/hr16/Unimatch/blob/main/gmflow-scale1-mixdata.pth)
 * zoe_depth_anything: Either [LiheYoung/Depth-Anything/checkpoints_metric_depth/depth_anything_metric_depth_indoor.pt](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints_metric_depth/depth_anything_metric_depth_indoor.pt) or [LiheYoung/Depth-Anything/checkpoints_metric_depth/depth_anything_metric_depth_outdoor.pt](https://huggingface.co/spaces/LiheYoung/Depth-Anything/blob/main/checkpoints_metric_depth/depth_anything_metric_depth_outdoor.pt)
-# 500 Stars 😄
+# 2000 Stars 😄
 <a href="https://star-history.com/#Fannovel16/comfyui_controlnet_aux&Date">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Fannovel16/comfyui_controlnet_aux&type=Date&theme=dark" />
